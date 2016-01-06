@@ -30,9 +30,8 @@ class ScriptDriver():
 
 class MyHTMLParser(HTMLParser):
     
-    def __init__(self, WriteFileHandle):
+    def __init__(self):
         HTMLParser.__init__(self, False)
-        self.handleF = WriteFileHandle
         self.MatchList = [[],[],[]]
         self.MatchCnt = 0
     
@@ -41,6 +40,8 @@ class MyHTMLParser(HTMLParser):
             self.Offset = self.getpos()
             self.TagText = self.get_starttag_text()
             self.MatchList.append([self.Offset[0], self.Offset[1], self.TagText]) 
+        elif tag == 'tr':
+            print("<tr> tag meet")
             
     def handle_data(self, data):
         return 0
@@ -86,10 +87,11 @@ else:
         try:
             with open(os.path.join(workDir, WorkFile[0]), 'r') as SourceFile:
                 SourceText = SourceFile.read()
+                parser = MyHTMLParser()
+                parser.feed(SourceText)
             
         except:
             Sd.ActionOnFault('Copying data was incorrect...')
-            sthGoneWrong = True;
             
 if not Sd.GetModuleState():
     print("it's ok")
