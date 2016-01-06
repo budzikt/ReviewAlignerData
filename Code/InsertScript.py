@@ -32,7 +32,7 @@ class DoorsReqParser(HTMLParser):
     
     def __init__(self):
         HTMLParser.__init__(self, False)
-        self.HeadPresent = False
+        self.HeadPresent = {'openTag':False, 'closeTag':False, 'HeadPresent':False}
         self.TrCount = 0
         self.TdCount = 0
         self.RequirementsHeadersObtained = False
@@ -42,14 +42,17 @@ class DoorsReqParser(HTMLParser):
     
     def handle_starttag(self, tag, attrs):
         if tag == "head":
-            self.Offset = self.getpos()
-            self.TagText = self.get_starttag_text()
+            self.HeadPresent['openTag'] = True
         elif tag == 'tr':
             self.TrCount+=1
             if self.TrCount >= 2:
                 self.RequirementsHeadersObtained = True
         elif tag == 'td':
             pass
+            
+    def handle_endtag(self, tag):
+        if tag == "head":
+            self.HeadPresent['closeTag'] = True
             
     def handle_data(self, data):
         if self.RequirementsHeadersObtained == False and data != '\n':
