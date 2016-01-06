@@ -28,26 +28,38 @@ class ScriptDriver():
     def GetModuleState(self):
         return self.sthGoneWrong
 
-class MyHTMLParser(HTMLParser):
+class DoorsReqParser(HTMLParser):
     
     def __init__(self):
         HTMLParser.__init__(self, False)
-        self.MatchList = [[],[],[]]
-        self.MatchCnt = 0
+        self.HeadPresent = False
+        self.TrCount = 0
+        self.TdCount = 0
+        self.RequirementsHeadersObtained = False
+        self.RequirementsHeaders = []
+        self.FirstRowString = ''
+        
     
     def handle_starttag(self, tag, attrs):
         if tag == "head":
             self.Offset = self.getpos()
             self.TagText = self.get_starttag_text()
-            self.MatchList.append([self.Offset[0], self.Offset[1], self.TagText]) 
         elif tag == 'tr':
-            print("<tr> tag meet")
+            self.TrCount+=1
+            if self.TrCount >= 2:
+                self.RequirementsHeadersObtained = True
+        elif tag == 'td':
+            pass
             
     def handle_data(self, data):
-        return 0
+        if self.RequirementsHeadersObtained == False and data != '\n':
+            self.RequirementsHeaders.append(data)
+            self.TdCount+=1
+        else:
+            pass
     
-    def GetData(self):
-        return self.MatchList
+    def GetHeader(self):
+        print(self.RequirementsHeaders)
 
 
 
@@ -80,20 +92,21 @@ else:
             print(os.path.join(workDir, WorkFile[0]))
             print(os.path.join(destinationDir, WorkFile[0]))
             ReWriteFile = open( os.path.join(destinationDir, WorkFile[0]), "w" )
-            #copyfile(WorkFile[0], os.path.join(destinationDir, WorkFile[0]))
+            
         except:
             Sd.ActionOnFault('Creation was wrong...')
         print('Parsing source *.htm to obtain <head> markup')
-        try:
-            with open(os.path.join(workDir, WorkFile[0]), 'r') as SourceFile:
-                SourceText = SourceFile.read()
-                parser = MyHTMLParser()
-                parser.feed(SourceText)
-            
-        except:
-            Sd.ActionOnFault('Copying data was incorrect...')
+        #try:
+        SourceFile = open(os.path.join(workDir, WorkFile[0]), 'r')
+        SourceText = SourceFile.read()
+        
+        parser = DoorsReqParser()
+        parser.feed(SourceText)
+        parser.GetHeader()
             
 if not Sd.GetModuleState():
     print("it's ok")
 else:
     print("Results may be invalid")
+
+#os.remove(os.path.join(destinationDir, WorkFile[0]))
