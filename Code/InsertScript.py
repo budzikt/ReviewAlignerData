@@ -32,7 +32,11 @@ class DoorsReqParser(HTMLParser):
     
     def __init__(self):
         HTMLParser.__init__(self, False)
-        self.HeadPresent = {'openTag':False, 'closeTag':False, 'HeadPresent':False}
+        self.HeadPresent = {
+                            'openTag':False, 
+                            'closeTag':False, 
+                            'HeadPresent':False
+                            }
         self.TrCount = 0
         self.TdCount = 0
         self.RequirementsHeadersObtained = False
@@ -61,8 +65,14 @@ class DoorsReqParser(HTMLParser):
         else:
             pass
     
-    def GetHeader(self):
+    def GetHeaders(self):
         print(self.RequirementsHeaders)
+    
+    def GetHeaderPresence(self):
+        if self.HeadPresent['openTag'] and self.HeadPresent['closeTag']:
+            return True
+        else:
+            return False
 
 
 
