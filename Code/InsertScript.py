@@ -1,6 +1,7 @@
 import os.path
 import sys
 import glob
+import re
 from lib2to3.fixer_util import String
 import shutil
 from shutil import copyfile
@@ -32,7 +33,6 @@ class ScriptDriver():
         return self.sthGoneWrong
 
 class DoorsReqParser(HTMLParser):
-    
     def __init__(self):
         HTMLParser.__init__(self, False)
         self.HeadPresent = {
@@ -51,6 +51,7 @@ class DoorsReqParser(HTMLParser):
     
     def handle_starttag(self, tag, attrs):
         if tag == "head":
+            print('Match <head>')
             self.HeadPresent['openTag'] = True
             self.HeadPresent['LocationOpen']['line'] = self.getpos()[0]
             self.HeadPresent['LocationOpen']['offset'] = self.getpos()[1]
@@ -63,6 +64,7 @@ class DoorsReqParser(HTMLParser):
             
     def handle_endtag(self, tag):
         if tag == "head":
+            print('Match </head>')
             self.HeadPresent['closeTag'] = True
             self.HeadPresent['LocationClose']['line'] = self.getpos()[0]
             self.HeadPresent['LocationClose']['offset'] = self.getpos()[1]
@@ -121,7 +123,28 @@ else:
         #Feed parser with DOORS document to verify, does it have header
         parser.feed(SourceText)
         if parser.GetHeaderPresence():
-            pass
+            print('Document already have <head> tag\nInserting scripts to head tag...')
+            for lines in SourceText.splitlines():
+                if lines.find(r'<head>') != (-1):
+                    ReWriteFile.write(lines + '\n')
+                    ReWriteFile.write(Sd.insertjQString + '\n')
+                    ReWriteFile.write(Sd.insertScriptString + '\n')
+                else:
+                    pass
+                ReWriteFile.write(lines + '\n')
+            ReWriteFile.close()
+                    
+        else:
+            print('Document have no <head>...\nCreating <head> section')
+            for lines in SourceText:
+                if lines.find(r'<title>') != (-1):
+                    ReWriteFile.write('<head>\n')
+                    ReWriteFile.write(Sd.insertjQString)
+                    ReWriteFile.write(Sd.insertScriptString)
+                    ReWriteFile.write('</head>\n')
+                else:
+                    ReWriteFile.write(line)
+                    pass
             
 if not Sd.GetModuleState():
     print("it's ok")
