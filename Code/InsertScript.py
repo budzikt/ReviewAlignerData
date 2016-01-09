@@ -108,8 +108,10 @@ else:
     result = os.path.exists(reviewPath)
     if os.path.exists(reviewPath):
         #Sd.ActionOnFault("Path already exist! You may created before your /review dir. If no, remove /review")
-        data = datetime.datetime.now()
-        #os.mkdir(destinationDir, mode=0o777)
+        dateStamp = datetime.datetime.now().date()
+        timeStamp = datetime.datetime.now().time()
+        timeStampFormatted = timeStamp.strftime('%H_%M_%S')
+        ReWriteFile = open( os.path.join(destinationDir, WorkFile[0].split('.')[0]+timeStampFormatted + '.htm'), "w" )
     else:
         print('Crating review directory...')
         os.mkdir(destinationDir, mode=0o777)
