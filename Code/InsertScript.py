@@ -8,23 +8,28 @@ from shutil import copyfile
 from importlib._bootstrap import SourceFileLoader
 import datetime
 
-
+# Pre-Requirities for script
+print('Obtaining Python version')
 PythonVersion = int(sys.version[0])
 if PythonVersion == 2:
-    print('you have python version 2.x.x installed.\nCorrect modules will be loaded!')
+    print('you have python version 2.x.x installed, correct modules will be loaded!')
     import HTMLparser
 elif PythonVersion == 3:
-    print('you have python version 3.x.x installed.\nCorrect modules will be loaded!')
+    print('you have python version 3.x.x installed, correct modules will be loaded!')
     from html.parser import HTMLParser
 
 ###############################
+### CLASSES ###################
+###############################
+
+
 
 class ScriptDriver():
     def __init__(self):
         self.sthGoneWrong = False
         self.insertScriptString = '<script type="text/javascript" src="aligner.js"></script>'
         self.insertjQString = '<script type="text/javascript" src="jquery-1.11.3.js"></script>'
-        
+               
     def DiscoverScripts(self, path = ""):
         pass
         
@@ -37,26 +42,32 @@ class ScriptDriver():
     def GetModuleState(self):
         return self.sthGoneWrong
 
+
+
+
 class DoorsReqParser(HTMLParser):
     def __init__(self):
         HTMLParser.__init__(self, False)
         self.HeadPresent = {
-                            'openTag':False, 
-                            'closeTag':False, 
-                            'HeadPresent':False,
-                            'LocationOpen': {'line':0,'offset':0},
-                            'LocationClose': {'line':0,'offset':0}
+                            'openTag':          False, 
+                            'closeTag':         False, 
+                            'HeadPresent':      False,
+                            'LocationOpen':     {'line':0,'offset':0},
+                            'LocationClose':    {'line':0,'offset':0}
                             }
         self.TrCount = 0
         self.TdCount = 0
+        self.RequirementHeaders = {'HeadersObtained': False, 'HeadersText': []}
         self.RequirementsHeadersObtained = False
         self.RequirementsHeaders = []
-        self.FirstRowString = ''
         
+    def feed(self, data):
+        print('\n\nParsing Requirements File! Hooray.\n\n')
+        HTMLParser.feed(self, data)
     
     def handle_starttag(self, tag, attrs):
         if tag == "head":
-            print('Match <head>')
+            print('Matched <head>')
             self.HeadPresent['openTag'] = True
             self.HeadPresent['LocationOpen']['line'] = self.getpos()[0]
             self.HeadPresent['LocationOpen']['offset'] = self.getpos()[1]
@@ -64,6 +75,7 @@ class DoorsReqParser(HTMLParser):
             self.TrCount+=1
             if self.TrCount >= 2:
                 self.RequirementsHeadersObtained = True
+                self.RequirementHeaders['HeadersObtained'] = True
         elif tag == 'td':
             pass
             
@@ -75,14 +87,15 @@ class DoorsReqParser(HTMLParser):
             self.HeadPresent['LocationClose']['offset'] = self.getpos()[1]
             
     def handle_data(self, data):
-        if self.RequirementsHeadersObtained == False and data != '\n':
-            self.RequirementsHeaders.append(data)
+        if  self.RequirementHeaders['HeadersObtained'] == False and data != '\n' and self.get_starttag_text().find('<title>'):
+            self.RequirementHeaders['HeadersText'].append(data)
             self.TdCount+=1
         else:
             pass
     
-    def GetHeaders(self):
-        print(self.RequirementsHeaders)
+    def GetHeaderTexts(self):
+        #print(self.RequirementsHeaders)
+        print(self.RequirementHeaders['HeadersText'])
     
     def GetHeaderPresence(self):
         if self.HeadPresent['openTag'] and self.HeadPresent['closeTag']:
@@ -90,6 +103,8 @@ class DoorsReqParser(HTMLParser):
         else:
             return False
 
+###############################
+### CODE    ###################
 ###############################
 
 Sd = ScriptDriver()
@@ -103,54 +118,52 @@ if  len(WorkFile) == 0:
 elif len(WorkFile) > 1:
     Sd.ActionOnFault("Multiple files in work dir, unable to load")
 else:
-    print('trying to create /review subfolder for modified files...');
+    print('Review file fetched: ' + WorkFile[0]);
     reviewPath = os.path.join(os.getcwd(), 'review')
-    result = os.path.exists(reviewPath)
-    if os.path.exists(reviewPath):
-        #Sd.ActionOnFault("Path already exist! You may created before your /review dir. If no, remove /review")
-        dateStamp = datetime.datetime.now().date()
-        timeStamp = datetime.datetime.now().time()
-        timeStampFormatted = timeStamp.strftime('%H_%M_%S')
-        ReWriteFile = open( os.path.join(destinationDir, WorkFile[0].split('.')[0]+timeStampFormatted + '.htm'), "w" )
+    if os.path.exists(reviewPath):  
+        print('Review directory already exist. Only new work file will be created')
     else:
         print('Crating review directory...')
         os.mkdir(destinationDir, mode=0o777)
-        try:
-            print(os.path.join(workDir, WorkFile[0]))
-            print(os.path.join(destinationDir, WorkFile[0]))
-            ReWriteFile = open( os.path.join(destinationDir, WorkFile[0]), "w" )
-            
-        except:
-            Sd.ActionOnFault('Creation subfolder was wrong...')
-        print('Parsing source *.htm to obtain <head> markup')
 
-        SourceFile = open(os.path.join(workDir, WorkFile[0]), 'r')
-        SourceText = SourceFile.read()
-        parser = DoorsReqParser()
-        
-        parser.feed(SourceText)
-        
-        if parser.GetHeaderPresence():
-            print('Document already have <head> tag\nInserting scripts to head tag...')
-            for lines in SourceText.splitlines():
-                ReWriteFile.write(lines + '\n')
-                if lines.find(r'<head>') != (-1):
-                    ReWriteFile.write(Sd.insertjQString + '\n')
-                    ReWriteFile.write(Sd.insertScriptString + '\n')   
-            ReWriteFile.close()
-                    
-        else:
-            print('Document have no <head>...\nCreating <head> section')
-            for lines in SourceText:
-                if lines.find(r'<title>') != (-1):
-                    ReWriteFile.write('<head>\n')
-                    ReWriteFile.write(Sd.insertjQString)
-                    ReWriteFile.write(Sd.insertScriptString)
-                    ReWriteFile.write('</head>\n')
-                else:
-                    ReWriteFile.write(line)
-                    pass
+timeStamp = datetime.datetime.now().time()
+timeStampFormatted = timeStamp.strftime('%H_%M_%S')     
+try:
+    ReWriteFile = open( os.path.join(destinationDir, WorkFile[0].split('.')[0]+timeStampFormatted + '.htm'), "w" )
+except:
+    Sd.ActionOnFault('Creation subfolder was wrong...')
+
+print('Parsing source *.htm to obtain <head> markup')
+
+SourceFile = open(os.path.join(workDir, WorkFile[0]), 'r')
+SourceText = SourceFile.read()
+parser = DoorsReqParser()      
+parser.feed(SourceText)
+
+parser.GetHeaderTexts()
+
+if parser.GetHeaderPresence():
+    print('Document already have <head> tag\nInserting scripts to head tag...')
+    for lines in SourceText.splitlines():
+        ReWriteFile.write(lines + '\n')
+        if lines.find(r'<head>') != (-1):
+            ReWriteFile.write(Sd.insertjQString + '\n')
+            ReWriteFile.write(Sd.insertScriptString + '\n')   
+    ReWriteFile.close()
             
+else:
+    print('Document have no <head>...\nCreating <head> section')
+    for lines in SourceText:
+        if lines.find(r'<title>') != (-1):
+            ReWriteFile.write('<head>\n')
+            ReWriteFile.write(Sd.insertjQString)
+            ReWriteFile.write(Sd.insertScriptString)
+            ReWriteFile.write('</head>\n')
+            ReWriteFile.write(line)
+        else:
+            ReWriteFile.write(line)
+            pass
+    
 if not Sd.GetModuleState():
     print("it's ok")
 else:
