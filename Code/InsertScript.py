@@ -28,6 +28,7 @@ class ScriptDriver():
         self.sthGoneWrong = False
         self.insertScriptString = '<script type="text/javascript" src="../aligner.js"></script>'
         self.insertjQString = '<script type="text/javascript" src="../jquery-1.11.3.js"></script>'
+        self.insertStyles = '<link rel="stylesheet" type="text/css" href="../ReviewStyles.css">'
                
     def DiscoverScripts(self, path = ""):
         pass
@@ -146,7 +147,8 @@ if parser.GetHeaderPresence():
         ReWriteFile.write(lines + '\n')
         if lines.find(r'<head>') != (-1):
             ReWriteFile.write(Sd.insertjQString + '\n')
-            ReWriteFile.write(Sd.insertScriptString + '\n')   
+            ReWriteFile.write(Sd.insertScriptString + '\n')
+            ReWriteFile.write(Sd.insertStyles + '\n')   
     ReWriteFile.close()
             
 else:
