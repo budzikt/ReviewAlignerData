@@ -23,12 +23,11 @@ elif PythonVersion == 3:
 ###############################
 
 
-
 class ScriptDriver():
     def __init__(self):
         self.sthGoneWrong = False
-        self.insertScriptString = '<script type="text/javascript" src="aligner.js"></script>'
-        self.insertjQString = '<script type="text/javascript" src="jquery-1.11.3.js"></script>'
+        self.insertScriptString = '<script type="text/javascript" src="../aligner.js"></script>'
+        self.insertjQString = '<script type="text/javascript" src="../jquery-1.11.3.js"></script>'
                
     def DiscoverScripts(self, path = ""):
         pass
@@ -94,8 +93,7 @@ class DoorsReqParser(HTMLParser):
             pass
     
     def GetHeaderTexts(self):
-        #print(self.RequirementsHeaders)
-        print(self.RequirementHeaders['HeadersText'])
+        return(self.RequirementHeaders['HeadersText'])
     
     def GetHeaderPresence(self):
         if self.HeadPresent['openTag'] and self.HeadPresent['closeTag']:
@@ -143,7 +141,7 @@ parser.feed(SourceText)
 parser.GetHeaderTexts()
 
 if parser.GetHeaderPresence():
-    print('Document already have <head> tag\nInserting scripts to head tag...')
+    print('Document already have <head> tag, inserting scripts...')
     for lines in SourceText.splitlines():
         ReWriteFile.write(lines + '\n')
         if lines.find(r'<head>') != (-1):
@@ -152,17 +150,16 @@ if parser.GetHeaderPresence():
     ReWriteFile.close()
             
 else:
-    print('Document have no <head>...\nCreating <head> section')
+    print('Document have no <head>...\nCreating <head> section and embedding scripts')
     for lines in SourceText:
         if lines.find(r'<title>') != (-1):
             ReWriteFile.write('<head>\n')
             ReWriteFile.write(Sd.insertjQString)
             ReWriteFile.write(Sd.insertScriptString)
             ReWriteFile.write('</head>\n')
-            ReWriteFile.write(line)
         else:
-            ReWriteFile.write(line)
             pass
+        ReWriteFile.write(line)
     
 if not Sd.GetModuleState():
     print("it's ok")
