@@ -20,8 +20,11 @@ elif PythonVersion == 3:
 class ScriptDriver():
     def __init__(self):
         self.sthGoneWrong = False
-        self.insertScriptString = '<script src="aligner.js"></script>'
-        self.insertjQString = '<script src="jquery-1.11.3.js"></script>'
+        self.insertScriptString = '<script type="text/javascript" src="aligner.js"></script>'
+        self.insertjQString = '<script type="text/javascript" src="jquery-1.11.3.js"></script>'
+        
+    def DiscoverScripts(self, path = ""):
+        pass
         
     
     def ActionOnFault(self, ErrorText, GlobalAffect=True):
@@ -117,21 +120,17 @@ else:
 
         SourceFile = open(os.path.join(workDir, WorkFile[0]), 'r')
         SourceText = SourceFile.read()
-        
-        #Creata parser instance
         parser = DoorsReqParser()
-        #Feed parser with DOORS document to verify, does it have header
+        
         parser.feed(SourceText)
+        
         if parser.GetHeaderPresence():
             print('Document already have <head> tag\nInserting scripts to head tag...')
             for lines in SourceText.splitlines():
-                if lines.find(r'<head>') != (-1):
-                    ReWriteFile.write(lines + '\n')
-                    ReWriteFile.write(Sd.insertjQString + '\n')
-                    ReWriteFile.write(Sd.insertScriptString + '\n')
-                else:
-                    pass
                 ReWriteFile.write(lines + '\n')
+                if lines.find(r'<head>') != (-1):
+                    ReWriteFile.write(Sd.insertjQString + '\n')
+                    ReWriteFile.write(Sd.insertScriptString + '\n')   
             ReWriteFile.close()
                     
         else:
