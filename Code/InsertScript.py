@@ -6,6 +6,8 @@ from lib2to3.fixer_util import String
 import shutil
 from shutil import copyfile
 from importlib._bootstrap import SourceFileLoader
+import datetime
+
 
 PythonVersion = int(sys.version[0])
 if PythonVersion == 2:
@@ -105,7 +107,9 @@ else:
     reviewPath = os.path.join(os.getcwd(), 'review')
     result = os.path.exists(reviewPath)
     if os.path.exists(reviewPath):
-        Sd.ActionOnFault("Path already exist! You may created before your /review dir. If no, remove /review")
+        #Sd.ActionOnFault("Path already exist! You may created before your /review dir. If no, remove /review")
+        data = datetime.datetime.now()
+        #os.mkdir(destinationDir, mode=0o777)
     else:
         print('Crating review directory...')
         os.mkdir(destinationDir, mode=0o777)
