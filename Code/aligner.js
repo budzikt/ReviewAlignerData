@@ -13,6 +13,8 @@ $( document ).ready(function() {
     // TODO howto obtain ref to newly created element without referencing to parent
     var tableRef = $('table').before('<div></div>');
     tableRef.prev('div').addClass('hoovMenu');
+    tableRef.prev('div.hoovMenu').append('<ul><li>Opt1</li><li>Opt2</li></ul>');
+    //tableRef.prev('div.hoovMenu div').addClass('hidden');
     
     
     $(function(){
