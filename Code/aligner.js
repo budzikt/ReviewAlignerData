@@ -12,7 +12,7 @@ $( document ).ready(function() {
     //This is just bad... but works.
     // TODO howto obtain ref to newly created element without referencing to parent
     var tableRef = $('table').before('<div></div>');
-    tableRef.prev('div').addClass('hoovering');
+    tableRef.prev('div').addClass('hoovMenu');
     
     
     $(function(){
