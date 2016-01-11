@@ -22,28 +22,22 @@ div.hoovMenu{
 
 div.hoovMenu:hover {
     width: 150px;
-    height:	150px;
+    height:	30px;
 }
 
-div.hoovMenu div{
-	padding: 5px;
+
+div.hoovMenu form {
+	position: relative;
+}
+
+input.hidden{
+	
 	display: none;
-	background-color: red;
-	transition: display 1s;
 }
 
-div.hoovMenu:hover div{
+input.shown{
+	
 	display: block;
-	margin: 15px;
-	width: 100px;
-    height:	100px;
 }
-
-div.hoovMenu ul {
-	list-style: none;
-	padding-left: 25px;
-	padding-left: 25px;
-}
-
 
 
