@@ -30,14 +30,17 @@ div.hoovMenu form {
 	position: relative;
 }
 
-input.hidden{
+input[type="text"].hidden{
 	
 	display: none;
+	width: 0px;
 }
 
-input.shown{
+input[type="text"].shown{
 	
 	display: block;
+	width: 600px;
+	height: 5em;
 }
 
 

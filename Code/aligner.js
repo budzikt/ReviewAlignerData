@@ -24,23 +24,26 @@ $( document ).ready(function() {
     $(function(){
     $("tr td.RemarkCheckBox input.remarkCheck").click(function(event) {
     	
-    	var par = $(event.target).closest( "tr" );
-    	var commentBox = par.find('.remarkText');
-    	commentBox = $(commentBox);
+    	var checkedTr = $(event.target).closest( "tr" );
+    	var commentBox = checkedTr.find('.remarkText');
     	
     	if(event.target.checked == true){
-       		par.addClass("marked");
+       		checkedTr.addClass("marked");
+       		
        		if(commentBox.hasClass('hidden')) 
        		{commentBox.addClass('shown').removeClass('hidden');}
        		else 
        		{commentBox.addClass('shown');}
+       		$(commentBox).show(400);
     	}
     	else{
-    		par.removeClass("marked");
+    		checkedTr.removeClass("marked");
+    		
     		if(commentBox.hasClass('shown')) 
     		{commentBox.addClass('hidden').removeClass('shown');}
        		else 
        		{commentBox.addClass('hidden');}
+       		$(commentBox).hide(400);
     	}
 
     });
