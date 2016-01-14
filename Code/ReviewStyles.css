@@ -7,6 +7,42 @@ td{
 	line-height: 1.5em;
 }
 
-td.marked {
-	background-color: rgba(249, 126, 93, 0.5);
+tr.marked {
+	background-color: rgba(249, 126, 93, 0.9);
 }
+
+div.hoovMenu{
+	position: fixed;
+	background-color: green;
+	width:	30px;
+	height:	30px;
+    right:	0;
+    transition: width 1s, height 1s ;
+}
+
+div.hoovMenu:hover {
+    width: 150px;
+    height:	30px;
+}
+
+
+div.hoovMenu form {
+	position: relative;
+}
+
+td.RemarkTd{
+	vertical-align: top;
+}
+
+input.remarkCheckBox{
+	display: block;
+	float: left;
+}
+
+textarea{
+	clear: both;
+}
+	
+
+
+
