@@ -39,16 +39,8 @@ input.remarkCheckBox{
 	float: left;
 }
 
-input.remarkText{
-	
-	display: block;
-	width: 250px;
-	height: 100px;
-	text-align: left;
-    padding-left:0;
-    padding-top:0;
-    padding-bottom:0.4em;
-    padding-right: 0.4em;
+textarea{
+	clear: both;
 }
 	
 

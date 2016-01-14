@@ -5,7 +5,7 @@ $( document ).ready(function() {
 	var CheckBoxString ='<td>'
 						+'<form action="" method="get">'
   						+'<input type="checkbox" 	class="remarkCheckBox">'
-  						+'<input type="text" 		class="remarkText">'
+  						+'<textarea rows="4" cols="50"></textarea>'
 						+'</form></td>';
 						
 	var FormCode = '<form method="POST"><input type="submit" value="Submit"></form>';
@@ -17,13 +17,13 @@ $( document ).ready(function() {
     //One horrible line. <;_;>
     var tableRef = $('table').before('<div></div>').prev('div').addClass('hoovMenu').append(FormCode);
     //Hide all textboxes
-    $('tr td.RemarkTd input.remarkText').hide(0);
+    $('tr td.RemarkTd textarea').hide(0);
    
     $(function(){
     $("tr td.RemarkTd input.remarkCheckBox").click(function(event) {
     	
     	var checkedTr = $(event.target).closest( "tr" );
-    	var commentBox = checkedTr.find('.remarkText');
+    	var commentBox = checkedTr.find('textarea');
     	
     	if(event.target.checked == true){
        		checkedTr.addClass("marked");
