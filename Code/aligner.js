@@ -1,8 +1,7 @@
 
 
 function initReviewTd()
-{
-	var CheckBoxClass = 'RemarkTd';	
+{	
 	var CheckBoxString ='<td>'
 						+'<form action="" method="get">'
   						+'<input type="checkbox" 	class="remarkCheckBox">'
@@ -10,7 +9,7 @@ function initReviewTd()
 						+'</form></td>';
 	//Attach all review <td> tag						
     $('tr').prepend(CheckBoxString);
-    $('tr td:first-child').addClass(CheckBoxClass);
+    $('tr td:first-child').addClass('RemarkTd');
 
     //Hide all textboxes
     $('tr td.RemarkTd textarea').hide(0);
@@ -18,9 +17,7 @@ function initReviewTd()
 
 function initHooverMenu()
 {
-    var FormCode = 	'<form method="POST">'
-					+'<input type="submit" value="Submit">'
-					+'</form>';
+    var FormCode = 	'<td><button class="saveButton">Save</button></td>';
     // Select table element, embed div before, select those div, add hover class to it and append Sign Form code.
     //One horrible line. <;_;>
     var tableRef = $('table').before('<div></div>').prev('div').addClass('hoovMenu').append(FormCode);
@@ -47,6 +44,19 @@ $( document ).ready(function() {
 	    	}
 	
 	    });
+	});
+	
+	$('button.saveButton').click(function(event){
+		//Gather comments with non-empty value
+		var commentArray = $('tr td.RemarkTd textarea').filter(function(){
+			if (this.value == "") {return false;}
+			else {return true;}
+		});
+		var commentHeading = [];
+		$(commentArray).closest('td').next('td').each(function(index, commentHeading) {
+    		commentHeading[index] = $(this).html();
+    		});
+		
 	});
     
 });
