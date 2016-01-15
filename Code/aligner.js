@@ -48,15 +48,17 @@ $( document ).ready(function() {
 	
 	$('button.saveButton').click(function(event){
 		//Gather comments with non-empty value
-		var commentArray = $('tr td.RemarkTd textarea').filter(function(){
+		var commentArray = [];
+		commentArray = $('tr td.RemarkTd textarea').filter(function(){
 			if (this.value == "") {return false;}
 			else {return true;}
+		}).map(function(){
+			return $(this).val();
 		});
 		var commentHeading = [];
-		$(commentArray).closest('td').next('td').each(function(index, commentHeading) {
-    		commentHeading[index] = $(this).html();
-    		});
-		
+		commentHeading = $(commentArray).closest('td').next('td').map(function(index) {
+    		return $(this).html();
+    		});		
 	});
     
 });
