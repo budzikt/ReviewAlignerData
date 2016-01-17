@@ -9,9 +9,9 @@ function initReviewTd()
 						+'</form>'
 						+'</td>';
 	//Attach all review <td> tag						
-    $('tr').prepend(CheckBoxString);
+    $('tr:not(:has(>th))').prepend(CheckBoxString);
+    $('tr>th:eq(0)').parent().prepend('<th>Review comment</th>');
     $('tr td:first-child').addClass('RemarkTd');
-
     //Hide all textboxes
     $('tr td.RemarkTd textarea').hide(0);
 }
@@ -31,12 +31,16 @@ $( document ).ready(function() {
     //Read table heading
     var TableHeadings = [];
     $('tr th').each(function(index){
-    	TableHeadings[index] = $(this).text();
+    	TableHeadings[index] = $(this).text().toLowerCase();
     });
+    var idIndex = TableHeadings.indexOf("id");
+    if(idIndex == -1){
+    	alert("No ID in match-set");
+    }
+
     
     //Show or Hide comment box
-    $(function(){
-	    $("tr td.RemarkTd input.remarkCheckBox").click(function(event) {
+	$("tr td.RemarkTd input.remarkCheckBox").click(function(event) {
 	    	
 	    	var checkedTr = $(event.target).closest( "tr" );
 	    	var commentBox = checkedTr.find('textarea');
@@ -50,38 +54,33 @@ $( document ).ready(function() {
 	       		$(commentBox).hide(400);
 	    	}
 	
-	    });
-	});
+	 });
 	
 	
 	$('button.saveButton').click(function(event){
 		
 		//Fild table row with comment content
 		var rowWithContent = $('table tr').filter(function(index){
-			if($('textarea', this).val() != "")
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
+			if($('textarea', this).val() != ""){return true;}
+			else{return false;}
 		});
 		
+		var commentId = jQuery.makeArray($('td:eq('+ idIndex +')',rowWithContent).map(function(index){
+			return $(this).text();
+		}));
 		
-		$(rowWithContent).each(function(index){
-			
-			
-		});
-
-		var comments = $('td.RemarkTd textarea', rowWithContent).map(function(){
+		var commentText = jQuery.makeArray($('td.RemarkTd textarea', rowWithContent).map(function(){
 			return $(this).val();
-		});
-
-		var commentID = $(rowWithContent).closest('td');
+		}));
 		
-		commentArray = jQuery.makeArray(commentArray);	
-    	commentHeading = jQuery.makeArray(commentHeading);
+		fileblob = {"commentId": commentId, "commentText": commentText};
+		alert("aaa");
+
+
+
+		
+		//commentArray = jQuery.makeArray(commentArray);	
+    	//commentHeading = jQuery.makeArray(commentHeading);
     	//Crete download dat
     	//var textFileAsBlob = new Blob([commentArray[0]], {type:'text/plain'});
     	
