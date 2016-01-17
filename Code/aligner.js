@@ -2,11 +2,12 @@
 
 function initReviewTd()
 {	
-	var CheckBoxString ='<td>'
+	var CheckBoxString ='<td class="commentTd">'
 						+'<form action="" method="get">'
   						+'<input type="checkbox" 	class="remarkCheckBox">'
   						+'<textarea rows="4" cols="50"></textarea>'
-						+'</form></td>';
+						+'</form>'
+						+'</td>';
 	//Attach all review <td> tag						
     $('tr').prepend(CheckBoxString);
     $('tr td:first-child').addClass('RemarkTd');
@@ -18,16 +19,22 @@ function initReviewTd()
 function initHooverMenu()
 {
     var FormCode = 	'<td><button class="saveButton">Save</button></td>';
-    // Select table element, embed div before, select those div, add hover class to it and append Sign Form code.
-    //One horrible line. <;_;>
     var tableRef = $('table').before('<div></div>').prev('div').addClass('hoovMenu').append(FormCode);
 }
 
 $( document ).ready(function() {
 
+	//Init compose elements
     initReviewTd();
     initHooverMenu();
     
+    //Read table heading
+    var TableHeadings = [];
+    $('tr th').each(function(index){
+    	TableHeadings[index] = $(this).text();
+    });
+    
+    //Show or Hide comment box
     $(function(){
 	    $("tr td.RemarkTd input.remarkCheckBox").click(function(event) {
 	    	
@@ -46,20 +53,51 @@ $( document ).ready(function() {
 	    });
 	});
 	
+	
 	$('button.saveButton').click(function(event){
-		//Gather comments with non-empty value
-		var commentArray = [];
-		commentArray = $('tr td.RemarkTd textarea').filter(function(){
-			if (this.value == "") {return false;}
-			else {return true;}
-		}).map(function(){
+		
+		//Fild table row with comment content
+		var rowWithContent = $('table tr').filter(function(index){
+			if($('textarea', this).val() != "")
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		});
+		
+		
+		$(rowWithContent).each(function(index){
+			
+			
+		});
+
+		var comments = $('td.RemarkTd textarea', rowWithContent).map(function(){
 			return $(this).val();
 		});
-		var commentHeading = [];
-		commentHeading = $(commentArray).closest('td').next('td').map(function(index) {
-    		return $(this).html();
-    		});		
+
+		var commentID = $(rowWithContent).closest('td');
+		
+		commentArray = jQuery.makeArray(commentArray);	
+    	commentHeading = jQuery.makeArray(commentHeading);
+    	//Crete download dat
+    	//var textFileAsBlob = new Blob([commentArray[0]], {type:'text/plain'});
+    	
+		//create <a> downloadable elemenet
+//		var downloadLink = document.createElement("a");
+//		downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+//		downloadLink.onclick = destroyClickedElement;
+//		downloadLink.style.display = "none";
+//		document.body.appendChild(downloadLink);
+//		downloadLink.click();
 	});
+
+function destroyClickedElement(event)
+{
+	document.body.removeChild(event.target);
+}
     
 });
 
