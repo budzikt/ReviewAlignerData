@@ -28,6 +28,7 @@ $( document ).ready(function() {
     initReviewTd();
     initHooverMenu();
     
+    
     //Read table heading
     var TableHeadings = [];
     $('tr th').each(function(index){
@@ -73,29 +74,28 @@ $( document ).ready(function() {
 			return $(this).val();
 		}));
 		
-		fileblob = {"commentId": commentId, "commentText": commentText};
-		alert("aaa");
-
-
-
 		
-		//commentArray = jQuery.makeArray(commentArray);	
-    	//commentHeading = jQuery.makeArray(commentHeading);
-    	//Crete download dat
-    	//var textFileAsBlob = new Blob([commentArray[0]], {type:'text/plain'});
-    	
-		//create <a> downloadable elemenet
-//		var downloadLink = document.createElement("a");
-//		downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
-//		downloadLink.onclick = destroyClickedElement;
-//		downloadLink.style.display = "none";
-//		document.body.appendChild(downloadLink);
-//		downloadLink.click();
+		
+		blobToWrite = new Blob(commentId, {type : 'text/csv'});
+		
+		//alert("aaa");
+
+		var downloadLink = document.createElement("a");
+		downloadLink.style.display = "none";
+		document.body.appendChild(downloadLink);
+		downloadLink.href = window.URL.createObjectURL(blobToWrite);
+		downloadLink.onclick = destroyClickedElement;		
+		downloadLink.click();
 	});
 
 function destroyClickedElement(event)
 {
 	document.body.removeChild(event.target);
+}
+
+function convertBlobToCVS(object)
+{
+	
 }
     
 });
