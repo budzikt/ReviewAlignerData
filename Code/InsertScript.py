@@ -5,7 +5,7 @@ import re
 from lib2to3.fixer_util import String
 import shutil
 from shutil import copyfile
-from importlib._bootstrap import SourceFileLoader
+#from importlib._bootstrap import SourceFileLoader
 import datetime
 
 # Pre-Requirities for script
@@ -13,7 +13,7 @@ print('Obtaining Python version')
 PythonVersion = int(sys.version[0])
 if PythonVersion == 2:
     print('you have python version 2.x.x installed, correct modules will be loaded!')
-    import HTMLparser
+    from HTMLParser import HTMLParser
 elif PythonVersion == 3:
     print('you have python version 3.x.x installed, correct modules will be loaded!')
     from html.parser import HTMLParser
@@ -47,7 +47,7 @@ class ScriptDriver():
 
 class DoorsReqParser(HTMLParser):
     def __init__(self):
-        HTMLParser.__init__(self, False)
+        HTMLParser.__init__(self)
         self.HeadPresent = {
                             'openTag':          False, 
                             'closeTag':         False, 
@@ -123,9 +123,7 @@ else:
         print('Review directory already exist. Only new work file will be created')
     else:
         	print('Crating review directory...')
-        	os.mkdir(destinationDir, mode=0o777)
-	except:
-		os.mkdir(destinationDir)
+        	os.mkdir(destinationDir)
 
 timeStamp = datetime.datetime.now().time()
 timeStampFormatted = timeStamp.strftime('%H_%M_%S')     
