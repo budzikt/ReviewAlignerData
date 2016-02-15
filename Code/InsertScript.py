@@ -122,8 +122,10 @@ else:
     if os.path.exists(reviewPath):  
         print('Review directory already exist. Only new work file will be created')
     else:
-        print('Crating review directory...')
-        os.mkdir(destinationDir, mode=0o777)
+        	print('Crating review directory...')
+        	os.mkdir(destinationDir, mode=0o777)
+	except:
+		os.mkdir(destinationDir)
 
 timeStamp = datetime.datetime.now().time()
 timeStampFormatted = timeStamp.strftime('%H_%M_%S')     
